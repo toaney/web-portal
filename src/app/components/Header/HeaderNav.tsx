@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import {useRouter} from 'next/navigation';
+import {useRouter, usePathname} from 'next/navigation';
 import {useState, useRef} from 'react';
 import {Button, Menu, MenuItem, MenuTrigger, Popover} from 'react-aria-components';
 
@@ -10,6 +10,7 @@ const HeaderNav = () => {
   const [ullamcorperActive, setUllamcorperActive] = useState(false);
   const [morbiRutrumActive, setMorbiRutrumActive] = useState(false);
   const router = useRouter();
+  const currentPath = usePathname();
   let sitAmetTabRef = useRef(null);
   let ullamcorperTabRef = useRef(null);
   let morbiRutrumTabRef = useRef(null);
@@ -17,16 +18,16 @@ const HeaderNav = () => {
   return (
     <nav className="flex">
       <Link href="/">
-        <div>Dashboard</div>
+        <div className={`${currentPath === '/' ? 'border-b-[5px] border-black' : ''}`}>Dashboard</div>
       </Link>
       <Link href="/lorem-ipsum">
-        <div className={`flex pl-5`}>Lorem Ipsum</div>
+        <div className={`flex ml-5 ${currentPath === '/lorem-ipsum' ? 'border-b-[5px] border-black' : ''}`}>Lorem Ipsum</div>
       </Link>
       <Link href="/dolor">
-        <div className={`flex pl-5`}>Dolor</div>
+        <div className={`flex ml-5 ${currentPath === '/dolor' ? 'border-b-[5px] border-black' : ''}`}>Dolor</div>
       </Link>
-      <div className={`flex pl-5`}>
-        <Button onPress={() =>  setSitAmetActive(!sitAmetActive)} aria-label="Menu" ref={sitAmetTabRef} className={`flex`}>
+      <div className={`flex ml-5`}>
+        <Button onPress={() =>  setSitAmetActive(!sitAmetActive)} aria-label="Menu" ref={sitAmetTabRef} className={`flex ${currentPath === '/sit-amet/a' || currentPath === '/sit-amet/b' ? 'border-b-[5px] border-black' : ''}`}>
           Sit Amet
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 15" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -50,8 +51,8 @@ const HeaderNav = () => {
 
 
 
-      <div className={`flex pl-5`}>
-        <Button onPress={() =>  setUllamcorperActive(!ullamcorperActive)} aria-label="Menu" ref={ullamcorperTabRef} className={`flex`}>
+      <div className={`flex ml-5`}>
+        <Button onPress={() =>  setUllamcorperActive(!ullamcorperActive)} aria-label="Menu" ref={ullamcorperTabRef} className={`flex ${currentPath === '/ullamcorper/a' || currentPath === '/ullamcorper/b' ? 'border-b-[5px] border-black' : ''}`}>
           Ullamcorper
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 15" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -60,13 +61,13 @@ const HeaderNav = () => {
         <Popover triggerRef={ullamcorperTabRef} isOpen={ullamcorperActive} onOpenChange={() => setUllamcorperActive(!ullamcorperActive)} className={`bg-white p-5 border-2 border-[#D9D9D9] rounded`}>
           <Button onPress={()=> {
               setUllamcorperActive(!ullamcorperActive)
-              router.push('/sit-amet/a')
+              router.push('/ullamcorper/a')
             }} aria-label="Menu" className={`flex`}>
               Ullamcorper A
           </Button>
           <Button onPress={()=> {
               setUllamcorperActive(!ullamcorperActive)
-              router.push('/sit-amet/b')
+              router.push('/ullamcorper/b')
             }} aria-label="Menu" className={`flex`}>
               Ullamcorper B
           </Button>
@@ -76,8 +77,8 @@ const HeaderNav = () => {
 
 
 
-      <div className={`flex pl-5`}>
-        <Button onPress={() =>  setMorbiRutrumActive(!morbiRutrumActive)} aria-label="Menu" ref={morbiRutrumTabRef} className={`flex`}>
+      <div className={`flex ml-5`}>
+        <Button onPress={() =>  setMorbiRutrumActive(!morbiRutrumActive)} aria-label="Menu" ref={morbiRutrumTabRef} className={`flex ${currentPath === '/morbi-rutrum/a' || currentPath === '/morbi-rutrum/b' ? 'border-b-[5px] border-black' : ''}`}>
           Morbi Rutrum
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 15" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -86,13 +87,13 @@ const HeaderNav = () => {
         <Popover triggerRef={morbiRutrumTabRef} isOpen={morbiRutrumActive} onOpenChange={() => setMorbiRutrumActive(!morbiRutrumActive)} className={`bg-white p-5 border-2 border-[#D9D9D9] rounded`}>
           <Button onPress={()=> {
               setMorbiRutrumActive(!morbiRutrumActive)
-              router.push('/sit-amet/a')
+              router.push('/morbi-rutrum/a')
             }} aria-label="Menu" className={`flex`}>
               Sit Amet A
           </Button>
           <Button onPress={()=> {
               setMorbiRutrumActive(!morbiRutrumActive)
-              router.push('/sit-amet/b')
+              router.push('/morbi-rutrum/b')
             }} aria-label="Menu" className={`flex`}>
               Sit Amet B
           </Button>
