@@ -26,3 +26,6 @@ Other useful commands:
 ### Getting to the Donec Lorem Magna UI
 - Navigate to [http://localhost:3000/lorem-ipsum/donec-lorem-magna](http://localhost:3000/lorem-ipsum/donec-lorem-magna)
 - Note that the navbar navigation works and some urls are dynamically generated using Next.js
+
+### Screenshot of the Donec Lorem Magna page
+![alt text](<Screen Shot 2024-05-07 at 1.09.23 PM.png>)
