@@ -21,10 +21,10 @@ const HeaderNav = () => {
         <div className={`${currentPath === '/' ? 'border-b-[5px] border-black' : ''}`}>Dashboard</div>
       </Link>
       <Link href="/lorem-ipsum/donec-lorem-magna">
-        <div className={`flex ml-5 ${currentPath === '/lorem-ipsum' ? 'border-b-[5px] border-black' : ''}`}>Lorem Ipsum</div>
+        <div className={`flex ml-5 ${/lorem-ipsum/m.test(currentPath)  ? 'border-b-[5px] border-black' : ''}`}>Lorem Ipsum</div>
       </Link>
       <Link href="/dolor">
-        <div className={`flex ml-5 ${currentPath === '/dolor' ? 'border-b-[5px] border-black' : ''}`}>Dolor</div>
+        <div className={`flex ml-5 ${/dolor/m.test(currentPath) ? 'border-b-[5px] border-black' : ''}`}>Dolor</div>
       </Link>
       <div className={`flex ml-5`}>
         <Button onPress={() =>  setSitAmetActive(!sitAmetActive)} aria-label="Menu" ref={sitAmetTabRef} className={`flex ${/sit-amet/m.test(currentPath) ? 'border-b-[5px] border-black' : ''}`}>

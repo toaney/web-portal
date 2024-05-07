@@ -4,6 +4,7 @@ import {useState, useEffect} from 'react';
 import {usePathname} from 'next/navigation';
 import {Button, Label, ListBox, ListBoxItem, Popover, Select, SelectValue, Calendar, CalendarCell, CalendarGrid, DateInput, DatePicker, DateSegment, Dialog, Group, Heading} from 'react-aria-components';
 
+
 const mockData = {
   "formId": "1234",
   "label": "NUNC LUCTUS VEL TORTOR QUIS SODALES",
@@ -13,7 +14,7 @@ const mockData = {
   "lastName": {"type": "string", "oldValue": "WAYNE", "newValue": null},
   "givenName": {"type": "string", "oldValue": "BRUCE", "newValue": null},
   "gender": {"type": "string", "oldValue": "M - Male", "newValue": null},
-  "dob": {"type": "string", "oldValue": "07/31/2001", "newValue": null},
+  "dob": {"type": "string", "oldValue": null, "newValue": null},
   "street": {"type": "string", "oldValue": "2043 HILLTOP DR", "newValue": null},
   "city": {"type": "string", "oldValue": "LOS ANGELES", "newValue": null},
   "state": {"type": "string", "oldValue": "CA - California", "newValue": null},
@@ -26,15 +27,11 @@ const mockData = {
   "comments": {"type": "boolean", "oldValue": "", "newValue": null},
 }
 
-
 const LoremIpsumPage = ({params}) => {
   const currentPath = usePathname();
   const [formData, setFormData] = useState(mockData);
-  const [testInput, setTestInput] = useState('');
-
-  // useEffect (() => {
-  //   setFormData(mockData)
-  // }, [])
+  const [formLabel, setFormLabel] = useState();
+  const [formDob, setFormDob] = useState();
 
   function prettify(str) {
     return str.split('-').map(part => {
@@ -55,9 +52,44 @@ const LoremIpsumPage = ({params}) => {
     })
   }
 
+  function resetChanges(e) {
+    e.preventDefault()
+    console.log("reset")
+    setFormData( prevFormData => {
+      const nextState = {...prevFormData}
+      Object.keys(prevFormData).forEach(key =>{
+        console.log(key)
+        nextState[key] = {
+          ...nextState[key],
+          newValue: null
+        }
+      })
+      return nextState;
+    })
+  }
 
-  function hasNewValue(inputId){
-    return formData[inputId].newValue ? true : false
+  function handleSubmitLabel() {
+    const location = window.location.hostname;
+    fetch(`https://${location}:9000/api/labels`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({formData})
+    })
+  }
+
+  function handleSubmitForm() {
+    const location = window.location.hostname;
+    fetch(`https://${location}:9000/api/forms`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({formData})
+    })
   }
 
   return (
@@ -75,12 +107,12 @@ const LoremIpsumPage = ({params}) => {
           <label htmlFor="label">LABEL</label>
           <select id="label" className={`bg-[#E1E1E1] bg-opacity-60 w-[618px] h-[34px] ml-3 mr-7 border-[1px] border-[#E1E1E1] rounded flex justify-between items-center`}>
             <option value="volvo">NUNC LUCTUS VEL TORTOR QUIS SODALES</option>
-            <option value="saab">Saab</option>
-            <option value="opel">Opel</option>
-            <option value="audi">Audi</option>
+            <option value="saab">NUNC LUCTUS VEL QUIS SODALES</option>
+            <option value="opel">NUNC LUCTUS VEL TORTOR SODALES</option>
+            <option value="audi">NUNC LUCTUS VEL TORTOR QUIS</option>
           </select>
 
-        <button className={`w-[181px] h-12 bg-[#B9B9B9] rounded-full text-white`}>
+        <button onClick={() => handleSubmitLabel()} className={`w-[181px] h-12 bg-[#B9B9B9] rounded-full text-white`}>
           SUBMIT
         </button>
       </div>
@@ -123,7 +155,7 @@ const LoremIpsumPage = ({params}) => {
               <fieldset className={`flex items-center`}>
                 {/* <Label>Date</Label> */}
                 <label htmlFor="dob" className={`inline-block text-right w-[145px] pr-3`}>DOB</label>
-                <DatePicker className={`flex h-[34px] border rounded px-2`} id="dob">
+                <DatePicker value={formDob} onChange={setFormDob} className={`flex h-[34px] border rounded px-2`} id="dob">
                   <Group className={`flex w-[140px] justify-between`}>
                     <DateInput className={`flex pt-[5px] pr-3`}>
                       {(segment) => <DateSegment segment={segment} />}
@@ -135,10 +167,10 @@ const LoremIpsumPage = ({params}) => {
                       </svg>
                     </Button>
                   </Group>
-                  <Popover>
+                  <Popover className={`bg-white p-4 border rounded`}>
                     <Dialog>
                       <Calendar>
-                        <header className={`flex`}>
+                        <header className={`flex justify-between`}>
                           <Button slot="previous">◀</Button>
                           <Heading />
                           <Button slot="next">▶</Button>
@@ -196,11 +228,11 @@ const LoremIpsumPage = ({params}) => {
               <h3 className={`font-bold text-xl mb-[19px]`}>CONTACT</h3>
               <fieldset className={`flex mb-[13px] items-center`}>
                 <label htmlFor="telephone" className={`inline-block text-right w-[145px] pl-8 pr-3`}>TELEPHONE</label>
-                <input type="text" id="telephone" className={`w-[167px] h-8 border-[1px] border-[#E1E1E1] rounded ${formData.telephone.oldValue && !formData.telephone.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
+                <input type="text" id="telephone" value={formData.telephone.newValue ? formData.telephone.newValue : formData.telephone.oldValue} onChange={(e) => handleFormUpdate("telephone", e.target.value)} className={`w-[167px] h-8 px-2 border-[1px] border-[#E1E1E1] rounded ${formData.telephone.oldValue && !formData.telephone.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
               </fieldset>
               <fieldset className={`flex mb-[13px] items-center`}>
                 <label htmlFor="email" className={`inline-block text-right w-[145px] pr-3`}>EMAIL</label>
-                <input type="text" id="email" className={`w-[316px] h-8 border-[1px] border-[#E1E1E1] rounded ${formData.email.oldValue && !formData.email.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
+                <input type="text" id="email" value={formData.email.newValue ? formData.email.newValue : formData.email.oldValue} onChange={(e) => handleFormUpdate("email", e.target.value)} className={`w-[316px] h-8 px-2 border-[1px] border-[#E1E1E1] rounded ${formData.email.oldValue && !formData.email.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
               </fieldset>
             </div>
           </div>
@@ -212,7 +244,7 @@ const LoremIpsumPage = ({params}) => {
           <h3 className={`mb-5 font-bold text-xl border-b-[1px]`}>LETTER</h3>
           <div className={`flex flex-row mb-[60px]`}>
             <fieldset className={`flex items-center w-[55%]`}>
-              <input type="checkbox" id="sendLetter" className={``}/>
+              <input type="checkbox" checked={formData.sendLetter.newValue ? formData.sendLetter.newValue : formData.sendLetter.oldValue? formData.sendLetter.oldValue : false} onClick={(e) => handleFormUpdate("sendLetter", formData.sendLetter.newValue ? !formData.sendLetter.newValue : formData.sendLetter.oldValue ? !formData.sendLetter.oldValue : true)} id="sendLetter" className={``}/>
               <label htmlFor="sendLetter" className={`inline-block w-[145px] ml-1.5 pr-3 pt-[2px]`}>SEND A LETTER</label>
             </fieldset>
 
@@ -231,10 +263,10 @@ const LoremIpsumPage = ({params}) => {
                     </svg>
                   </Button>
                 </Group>
-                <Popover>
+                <Popover className={`bg-white p-4 border rounded`}>
                   <Dialog>
                     <Calendar>
-                      <header className={`flex`}>
+                      <header className={`flex justify-between`}>
                         <Button slot="previous">◀</Button>
                         <Heading />
                         <Button slot="next">▶</Button>
@@ -251,7 +283,7 @@ const LoremIpsumPage = ({params}) => {
           <div>
             <fieldset className={`flex justify-start mb-[34px]`}>
               <label htmlFor="comments" className={`pr-3`}>COMMENTS</label>
-              <textarea id="comments" className={`w-[694px] h-[109px] p-2 border-[1px] border-[#E1E1E1] rounded ${formData.comments.oldValue && !formData.comments.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
+              <textarea id="comments" value={formData.comments.newValue ? formData.comments.newValue : formData.comments.oldValue} onChange={(e) => handleFormUpdate("comments", e.target.value)} className={`w-[694px] h-[109px] p-2 border-[1px] border-[#E1E1E1] rounded ${formData.comments.oldValue && !formData.comments.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
             </fieldset>
           </div>
         </div>
@@ -259,10 +291,10 @@ const LoremIpsumPage = ({params}) => {
 
 
         <div className={`flex flex-row pl-[120px] mb-24`}>
-          <button className={`w-[181px] h-12 bg-[#2C2C2C] rounded-full text-white`}>
+          <button onClick={() => handleSubmitForm()} className={`w-[181px] h-12 bg-[#2C2C2C] rounded-full text-white`}>
             SUBMIT
           </button>
-          <button className={`ml-[40px] underline`}>Reset Changes</button>
+          <button onClick={(e) => resetChanges(e)} className={`ml-[40px] underline`}>Reset Changes</button>
         </div>
       </form>
 
