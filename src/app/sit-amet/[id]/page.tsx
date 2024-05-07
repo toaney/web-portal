@@ -1,11 +1,11 @@
 "use client"
 
-const LoremIpsum = () => {
+const SitAmet = ({params}) => {
   return (
     <div className="w-full h-full flex flex-col items-center">
-      Lorem Ipsum
+      Sit Amet - {params.id}
     </div>
   )
 }
 
-export default LoremIpsum;
+export default SitAmet;

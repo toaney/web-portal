@@ -20,14 +20,14 @@ const HeaderNav = () => {
       <Link href="/">
         <div className={`${currentPath === '/' ? 'border-b-[5px] border-black' : ''}`}>Dashboard</div>
       </Link>
-      <Link href="/lorem-ipsum">
+      <Link href="/lorem-ipsum/donec-lorem-magna">
         <div className={`flex ml-5 ${currentPath === '/lorem-ipsum' ? 'border-b-[5px] border-black' : ''}`}>Lorem Ipsum</div>
       </Link>
       <Link href="/dolor">
         <div className={`flex ml-5 ${currentPath === '/dolor' ? 'border-b-[5px] border-black' : ''}`}>Dolor</div>
       </Link>
       <div className={`flex ml-5`}>
-        <Button onPress={() =>  setSitAmetActive(!sitAmetActive)} aria-label="Menu" ref={sitAmetTabRef} className={`flex ${currentPath === '/sit-amet/a' || currentPath === '/sit-amet/b' ? 'border-b-[5px] border-black' : ''}`}>
+        <Button onPress={() =>  setSitAmetActive(!sitAmetActive)} aria-label="Menu" ref={sitAmetTabRef} className={`flex ${/sit-amet/m.test(currentPath) ? 'border-b-[5px] border-black' : ''}`}>
           Sit Amet
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 15" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -52,7 +52,7 @@ const HeaderNav = () => {
 
 
       <div className={`flex ml-5`}>
-        <Button onPress={() =>  setUllamcorperActive(!ullamcorperActive)} aria-label="Menu" ref={ullamcorperTabRef} className={`flex ${currentPath === '/ullamcorper/a' || currentPath === '/ullamcorper/b' ? 'border-b-[5px] border-black' : ''}`}>
+        <Button onPress={() =>  setUllamcorperActive(!ullamcorperActive)} aria-label="Menu" ref={ullamcorperTabRef} className={`flex ${/ullamcorper/m.test(currentPath) ? 'border-b-[5px] border-black' : ''}`}>
           Ullamcorper
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 15" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -78,7 +78,7 @@ const HeaderNav = () => {
 
 
       <div className={`flex ml-5`}>
-        <Button onPress={() =>  setMorbiRutrumActive(!morbiRutrumActive)} aria-label="Menu" ref={morbiRutrumTabRef} className={`flex ${currentPath === '/morbi-rutrum/a' || currentPath === '/morbi-rutrum/b' ? 'border-b-[5px] border-black' : ''}`}>
+        <Button onPress={() =>  setMorbiRutrumActive(!morbiRutrumActive)} aria-label="Menu" ref={morbiRutrumTabRef} className={`flex ${/morbi-rutrum/m.test(currentPath) ? 'border-b-[5px] border-black' : ''}`}>
           Morbi Rutrum
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 15" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -89,13 +89,25 @@ const HeaderNav = () => {
               setMorbiRutrumActive(!morbiRutrumActive)
               router.push('/morbi-rutrum/a')
             }} aria-label="Menu" className={`flex`}>
-              Sit Amet A
+              Morbi Rutrum A
           </Button>
           <Button onPress={()=> {
               setMorbiRutrumActive(!morbiRutrumActive)
               router.push('/morbi-rutrum/b')
             }} aria-label="Menu" className={`flex`}>
-              Sit Amet B
+              Morbi Rutrum B
+          </Button>
+          <Button onPress={()=> {
+              setMorbiRutrumActive(!morbiRutrumActive)
+              router.push('/morbi-rutrum/c')
+            }} aria-label="Menu" className={`flex`}>
+              Morbi Rutrum C
+          </Button>
+          <Button onPress={()=> {
+              setMorbiRutrumActive(!morbiRutrumActive)
+              router.push('/morbi-rutrum/d')
+            }} aria-label="Menu" className={`flex`}>
+              Morbi Rutrum D
           </Button>
         </Popover>
       </div>

@@ -1,11 +1,11 @@
 "use client"
 
-const LoremIpsum = () => {
+const MorbiRutrum = () => {
   return (
     <div className="w-full h-full flex flex-col items-center">
-      Donec Lorem Magna
+      Morbi Rutrum
     </div>
   )
 }
 
-export default LoremIpsum;
+export default MorbiRutrum;

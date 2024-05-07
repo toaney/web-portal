@@ -1,7 +1,7 @@
-const MorbiRutrumA = () => {
+const MorbiRutrumA = ({params}) => {
   return (
     <div className="w-full h-full flex flex-col items-center">
-      Morbi Rutrum A
+      Morbi Rutrum - {params.id}
     </div>
   )
 }
