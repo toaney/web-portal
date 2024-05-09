@@ -1,15 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Button,
-  Label,
-  ListBox,
-  ListBoxItem,
   Popover,
-  Select,
-  SelectValue,
   Calendar,
   CalendarCell,
   CalendarGrid,
@@ -65,12 +60,6 @@ interface FormData {
   comments: InputString;
 }
 
-interface InputField {
-  type: string;
-  oldValue: string | null;
-  newValue: string | null;
-}
-
 interface InputString {
   type: string;
   oldValue: string | number | readonly string[] | undefined;
@@ -102,10 +91,6 @@ type Props = {
 type UrlParams = {
   id: string;
 };
-
-interface Indexable {
-  [key: string]: any;
-}
 
 const LoremIpsumPage = ({ params }: Props) => {
   const currentPath = usePathname();
