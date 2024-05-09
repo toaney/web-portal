@@ -31,11 +31,11 @@ const mockData: FormData = {
   state: { type: "string", oldValue: "CA - California", newValue: undefined },
   zip: { type: "number", oldValue: 90210, newValue: undefined },
   country: { type: "string", oldValue: "UNITED STATES", newValue: undefined },
-  telephone: { type: "string", oldValue: undefined, newValue: undefined },
+  telephone: { type: "number", oldValue: undefined, newValue: undefined },
   email: { type: "string", oldValue: "", newValue: undefined },
-  sendLetter: { type: "string", oldValue: true, newValue: undefined },
+  sendLetter: { type: "string", oldValue: false, newValue: undefined },
   letterDate: { type: "string", oldValue: "", newValue: undefined },
-  comments: { type: "boolean", oldValue: "", newValue: undefined },
+  comments: { type: "string", oldValue: "", newValue: undefined },
 };
 
 interface FormData {
@@ -95,7 +95,7 @@ type UrlParams = {
 const LoremIpsumPage = ({ params }: Props) => {
   const currentPath = usePathname();
   const [formData, setFormData] = useState<FormData>(mockData);
-  const [formLabel, setFormLabel] = useState();
+  const [formLabel, setFormLabel] = useState<string>();
   const [formDob, setFormDob] = useState<any>();
 
   function prettify(str: string) {
@@ -135,28 +135,40 @@ const LoremIpsumPage = ({ params }: Props) => {
     });
   }
 
-  function handleSubmitLabel() {
+  async function handleSubmitLabel(e: any) {
+    e.preventDefault();
     const location = window.location.hostname;
-    fetch(`https://${location}:9000/api/labels`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ formData }),
-    });
+    try {
+      const response = await fetch(`https://${location}:9000/api/v1/labels`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formLabel }),
+      });
+    } catch (error) {
+      console.error("Error", error)
+    }
   }
 
-  function handleSubmitForm() {
+  async function handleSubmitForm(e: any) {
+    e.preventDefault();
     const location = window.location.hostname;
-    fetch(`https://${location}:9000/api/forms`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ formData }),
-    });
+    try{
+      const response = await fetch(`https://${location}:9000/api/v1/forms`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formData }),
+      });
+      const result = await response.json();
+      console.log("Success", result);
+    } catch (error) {
+      console.error("Error", error)
+    }
   }
 
   return (
@@ -180,15 +192,19 @@ const LoremIpsumPage = ({ params }: Props) => {
         <label htmlFor="label">LABEL</label>
         <select
           id="label"
+          value={formLabel}
+          onChange={(e) =>
+            setFormLabel(e.target.value)
+          }
           className={`bg-[#E1E1E1] bg-opacity-60 w-[618px] h-[34px] ml-3 mr-7 border-[1px] border-[#E1E1E1] rounded flex justify-between items-center`}
         >
-          <option value="volvo">NUNC LUCTUS VEL TORTOR QUIS SODALES</option>
-          <option value="saab">NUNC LUCTUS VEL QUIS SODALES</option>
-          <option value="opel">NUNC LUCTUS VEL TORTOR SODALES</option>
-          <option value="audi">NUNC LUCTUS VEL TORTOR QUIS</option>
+          <option value="NUNC LUCTUS VEL TORTOR QUIS SODALES">NUNC LUCTUS VEL TORTOR QUIS SODALES</option>
+          <option value="NUNC LUCTUS VEL QUIS SODALES">NUNC LUCTUS VEL QUIS SODALES</option>
+          <option value="NUNC LUCTUS VEL TORTOR SODALES">NUNC LUCTUS VEL TORTOR SODALES</option>
+          <option value="NUNC LUCTUS VEL TORTOR QUIS">NUNC LUCTUS VEL TORTOR QUIS</option>
         </select>
         <button
-          onClick={() => handleSubmitLabel()}
+          onClick={(e) => handleSubmitLabel(e)}
           className={`w-[181px] h-12 bg-[#B9B9B9] rounded-full text-white`}
         >
           SUBMIT
@@ -330,12 +346,24 @@ const LoremIpsumPage = ({ params }: Props) => {
                 </label>
                 <select
                   id="gender"
-                  className={`bg-[#E1E1E1] bg-opacity-60 w-[112px] h-[34px] px-[1px] border-[1px] border-[#E1E1E1] rounded flex justify-between items-center`}
+                  value={
+                    formData.gender.newValue
+                      ? formData.gender.newValue
+                      : formData.gender.oldValue
+                  }
+                  onChange={(e) =>
+                    handleFormUpdate("gender", e.target.value)
+                  }
+                  className={`bg-[#E1E1E1] bg-opacity-60 w-[112px] h-[34px] px-[1px] border-[1px] border-[#E1E1E1] rounded flex justify-between items-center ${
+                    formData.gender.oldValue && !formData.gender.newValue
+                      ? "bg-[#E1E1E1] bg-opacity-60"
+                      : "bg-white"
+                  }`}
                 >
-                  <option value="volvo">M - Male</option>
-                  <option value="saab">F - Female</option>
-                  <option value="opel">O - Other</option>
-                  <option value="audi">Do not wish to respond</option>
+                  <option value="M - Male">M - Male</option>
+                  <option value="F - Female">F - Female</option>
+                  <option value="O - Other">O - Other</option>
+                  <option value="Do not wish to respond">Do not wish to respond</option>
                 </select>
               </fieldset>
               <fieldset className={`flex items-center`}>
@@ -453,16 +481,24 @@ const LoremIpsumPage = ({ params }: Props) => {
                   </label>
                   <select
                     id="state"
+                    value={
+                      formData.state.newValue
+                        ? formData.state.newValue
+                        : formData.state.oldValue
+                    }
+                    onChange={(e) =>
+                      handleFormUpdate("state", e.target.value)
+                    }
                     className={`inline-block w-[112px] h-[34px] px-[1px] border-[1px] border-[#E1E1E1] rounded flex justify-between items-center ${
                       formData.state.oldValue && !formData.state.newValue
                         ? "bg-[#E1E1E1] bg-opacity-60"
                         : "bg-white"
                     }`}
                   >
-                    <option value="volvo">CA - California</option>
-                    <option value="saab">AL - Alabama</option>
-                    <option value="opel">AK - Alaska</option>
-                    <option value="audi">AZ - Arizona</option>
+                    <option value="CA - California">CA - California</option>
+                    <option value="AL - Alabama">AL - Alabama</option>
+                    <option value="AK - Alaska">AK - Alaska</option>
+                    <option value="AZ - Arizona">AZ - Arizona</option>
                   </select>
                 </fieldset>
                 <fieldset className={`flex mb-[13px] ml-[26px] items-center`}>
@@ -497,16 +533,24 @@ const LoremIpsumPage = ({ params }: Props) => {
                 </label>
                 <select
                   id="country"
+                  value={
+                    formData.country.newValue
+                      ? formData.country.newValue
+                      : formData.country.oldValue
+                  }
+                  onChange={(e) =>
+                    handleFormUpdate("country", e.target.value)
+                  }
                   className={`w-[259px] h-[34px] border-[1px] border-[#E1E1E1] rounded flex justify-between items-center ${
                     formData.country.oldValue && !formData.country.newValue
                       ? "bg-[#E1E1E1] bg-opacity-60"
                       : "bg-white"
                   }`}
                 >
-                  <option value="volvo">UNITED STATES</option>
-                  <option value="saab">CANADA</option>
-                  <option value="opel">MEXICO</option>
-                  <option value="audi">CHINA</option>
+                  <option value="UNITED STATES">UNITED STATES</option>
+                  <option value="CANADA">CANADA</option>
+                  <option value="MEXICO">MEXICO</option>
+                  <option value="CHINA">CHINA</option>
                 </select>
               </fieldset>
             </div>
@@ -576,7 +620,9 @@ const LoremIpsumPage = ({ params }: Props) => {
                     ? formData.sendLetter.oldValue
                     : false
                 }
-                onChange={(e) =>
+                onChange={(e) => {
+                  console.log("#######################")
+                  console.log(e.target.checked)
                   handleFormUpdate(
                     "sendLetter",
                     formData.sendLetter.newValue
@@ -585,6 +631,8 @@ const LoremIpsumPage = ({ params }: Props) => {
                       ? !formData.sendLetter.oldValue
                       : true
                   )
+
+                }
                 }
                 id="sendLetter"
                 className={``}
@@ -669,7 +717,7 @@ const LoremIpsumPage = ({ params }: Props) => {
         </div>
         <div className={`flex flex-row pl-[120px] mb-24`}>
           <button
-            onClick={() => handleSubmitForm()}
+            onClick={(e) => handleSubmitForm(e)}
             className={`w-[181px] h-12 bg-[#2C2C2C] rounded-full text-white`}
           >
             SUBMIT
