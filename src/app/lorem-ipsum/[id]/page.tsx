@@ -5,60 +5,143 @@ import {usePathname} from 'next/navigation';
 import {Button, Label, ListBox, ListBoxItem, Popover, Select, SelectValue, Calendar, CalendarCell, CalendarGrid, DateInput, DatePicker, DateSegment, Dialog, Group, Heading} from 'react-aria-components';
 
 
-const mockData = {
+const mockData: FormData = {
   "formId": "1234",
   "label": "NUNC LUCTUS VEL TORTOR QUIS SODALES",
-  "uniqueId": {"type": "string", "oldValue": "34-56789012-3", "newValue": null},
-  "altId": {"type": "string", "oldValue": "", "newValue": null},
-  "dln": {"type": "string", "oldValue": "777-67-7777", "newValue": null},
-  "lastName": {"type": "string", "oldValue": "WAYNE", "newValue": null},
-  "givenName": {"type": "string", "oldValue": "BRUCE", "newValue": null},
-  "gender": {"type": "string", "oldValue": "M - Male", "newValue": null},
-  "dob": {"type": "string", "oldValue": null, "newValue": null},
-  "street": {"type": "string", "oldValue": "2043 HILLTOP DR", "newValue": null},
-  "city": {"type": "string", "oldValue": "LOS ANGELES", "newValue": null},
-  "state": {"type": "string", "oldValue": "CA - California", "newValue": null},
-  "zip": {"type": "number", "oldValue": "90210", "newValue": null},
-  "country": {"type": "string", "oldValue": "UNITED STATES", "newValue": null},
-  "telephone": {"type": "string", "oldValue": "", "newValue": null},
-  "email": {"type": "string", "oldValue": "", "newValue": null},
-  "sendLetter": {"type": "string", "oldValue": true, "newValue": null},
-  "letterDate": {"type": "string", "oldValue": "", "newValue": null},
-  "comments": {"type": "boolean", "oldValue": "", "newValue": null},
+  "uniqueId": {"type": "string", "oldValue": "34-56789012-3", "newValue": undefined},
+  "altId": {"type": "string", "oldValue": "", "newValue": undefined},
+  "dln": {"type": "string", "oldValue": "777-67-7777", "newValue": undefined},
+  "lastName": {"type": "string", "oldValue": "WAYNE", "newValue": undefined},
+  "givenName": {"type": "string", "oldValue": "BRUCE", "newValue": undefined},
+  "gender": {"type": "string", "oldValue": "M - Male", "newValue": undefined},
+  "dob": {"type": "string", "oldValue": undefined, "newValue": undefined},
+  "street": {"type": "string", "oldValue": "2043 HILLTOP DR", "newValue": undefined},
+  "city": {"type": "string", "oldValue": "LOS ANGELES", "newValue": undefined},
+  "state": {"type": "string", "oldValue": "CA - California", "newValue": undefined},
+  "zip": {"type": "number", "oldValue": 90210, "newValue": undefined},
+  "country": {"type": "string", "oldValue": "UNITED STATES", "newValue": undefined},
+  "telephone": {"type": "string", "oldValue": undefined, "newValue": undefined},
+  "email": {"type": "string", "oldValue": "", "newValue": undefined},
+  "sendLetter": {"type": "string", "oldValue": true, "newValue": undefined},
+  "letterDate": {"type": "string", "oldValue": "", "newValue": undefined},
+  "comments": {"type": "boolean", "oldValue": "", "newValue": undefined},
 }
 
-const LoremIpsumPage = ({params}) => {
-  const currentPath = usePathname();
-  const [formData, setFormData] = useState(mockData);
-  const [formLabel, setFormLabel] = useState();
-  const [formDob, setFormDob] = useState();
+interface FormData {
+  formId: string,
+  label: string,
+  uniqueId: InputString,
+  altId: InputString,
+  dln: InputString,
+  lastName: InputString,
+  givenName: InputString, 
+  gender: InputString,
+  dob: InputDate,
+  street: InputString,
+  city: InputString,
+  state: InputString,
+  zip: InputNumber,
+  country: InputString,
+  telephone: InputNumber,
+  email: InputString,
+  sendLetter: InputBoolean,
+  letterDate: InputDate,
+  comments: InputString
+}
 
-  function prettify(str) {
+// string | number | readonly string[] | undefined
+
+interface InputField {
+  type: string,
+  oldValue: string | null,
+  newValue: string | null
+}
+
+interface InputString {
+  type: string,
+  oldValue: string | number | readonly string[] | undefined,
+  newValue: string | number | readonly string[] | undefined
+}
+
+interface InputNumber {
+  type: string,
+  oldValue: string | number | readonly string[] | undefined,
+  newValue: string | number | readonly string[] | undefined
+}
+
+interface InputDate {
+  type: any,
+  oldValue: any | null,
+  newValue: any | null
+}
+
+interface InputBoolean {
+  type: string,
+  oldValue: boolean | null | undefined,
+  newValue: boolean | null | undefined
+}
+
+type Props = {
+  params: UrlParams
+}
+
+type UrlParams = {
+  id: string
+}
+
+interface Indexable {
+  [key: string]: any;
+}
+
+const LoremIpsumPage = ({params}: Props) => {
+  const currentPath = usePathname();
+  const [formData, setFormData] = useState<FormData>(mockData);
+  const [formLabel, setFormLabel] = useState();
+  const [formDob, setFormDob] = useState<any>();
+
+  function prettify(str: string) {
     return str.split('-').map(part => {
         return part.charAt(0).toUpperCase() + part.slice(1);
     }).join(' ');
   }
 
-  function deconstructPath(str) {
+  function deconstructPath(str: string) {
     return prettify(str.slice(1).split('/').join('->-'));
   }
 
-  function handleFormUpdate(inputId, inputValue) {
-    setFormData({
+  // function handleFormUpdate(inputId: any, inputValue: any) {
+  //   setFormData({
+  //     ...formData,
+  //     [inputId]: {
+  //       ...formData[inputId],
+  //       newValue: inputValue}
+  //   })
+  // }
+
+  function handleFormUpdate(inputId: any, inputValue: any) {
+    setFormData( (formData: any) => ({
       ...formData,
       [inputId]: {
         ...formData[inputId],
         newValue: inputValue}
-    })
+    }));
   }
 
-  function resetChanges(e) {
+
+  // function handleFormUpdate(inputId: any, inputValue: any) {
+  //   setFormData( (prevFormData: any) => ({
+  //     ...prevFormData,
+  //     [inputId]: {
+  //       ...prevFormData[inputId],
+  //       newValue: inputValue}
+  //     }));
+  //   };
+
+  function resetChanges(e : any) {
     e.preventDefault()
-    console.log("reset")
-    setFormData( prevFormData => {
+    setFormData( (prevFormData: any) => {
       const nextState = {...prevFormData}
-      Object.keys(prevFormData).forEach(key =>{
-        console.log(key)
+      Object.keys(prevFormData).forEach((key) =>{
         nextState[key] = {
           ...nextState[key],
           newValue: null
@@ -211,7 +294,7 @@ const LoremIpsumPage = ({params}) => {
                 </fieldset>
                 <fieldset className={`flex mb-[13px] ml-[26px] items-center`}>
                   <label htmlFor="zip" className={`inline-block pr-3`}>ZIP</label>
-                  <input type="text" id="zip" value={formData.zip.newValue ? formData.zip.newValue : formData.zip.oldValue} onChange={(e) => handleFormUpdate("zip", e.target.value.toUpperCase())} className={`w-[144px] h-8 px-2 border-[1px] border-[#E1E1E1] rounded ${formData.zip.oldValue && !formData.zip.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
+                  <input type="number" id="zip" value={formData.zip.newValue ? formData.zip.newValue : formData.zip.oldValue} onChange={(e) => handleFormUpdate("zip", e.target.value.toUpperCase())} className={`w-[144px] h-8 px-2 border-[1px] border-[#E1E1E1] rounded ${formData.zip.oldValue && !formData.zip.newValue ? 'bg-[#E1E1E1] bg-opacity-60' : 'bg-white'}`}/>
                 </fieldset>
               </div>
               <fieldset className={`flex mb-[13px] items-center`}>
@@ -244,7 +327,7 @@ const LoremIpsumPage = ({params}) => {
           <h3 className={`mb-5 font-bold text-xl border-b-[1px]`}>LETTER</h3>
           <div className={`flex flex-row mb-[60px]`}>
             <fieldset className={`flex items-center w-[55%]`}>
-              <input type="checkbox" checked={formData.sendLetter.newValue ? formData.sendLetter.newValue : formData.sendLetter.oldValue? formData.sendLetter.oldValue : false} onClick={(e) => handleFormUpdate("sendLetter", formData.sendLetter.newValue ? !formData.sendLetter.newValue : formData.sendLetter.oldValue ? !formData.sendLetter.oldValue : true)} id="sendLetter" className={``}/>
+              <input type="checkbox" checked={formData.sendLetter.newValue ? formData.sendLetter.newValue : formData.sendLetter.oldValue? formData.sendLetter.oldValue : false} onChange={(e) => handleFormUpdate("sendLetter", formData.sendLetter.newValue ? !formData.sendLetter.newValue : formData.sendLetter.oldValue ? !formData.sendLetter.oldValue : true)} id="sendLetter" className={``}/>
               <label htmlFor="sendLetter" className={`inline-block w-[145px] ml-1.5 pr-3 pt-[2px]`}>SEND A LETTER</label>
             </fieldset>
 
